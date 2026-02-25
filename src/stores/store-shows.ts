@@ -3,6 +3,8 @@ import { computed, ref } from "vue";
 import type { TvMazeShow } from "../api/tvmaze.types";
 import { getShowsPage, searchShows } from "../api/tvmaze.client";
 
+
+// this is a store-specific helper type, not an API type and keeping it inside this file improves clarity and reduces unnecessary coupling.
 export type GenreSection = {
     genre: string;
     shows: TvMazeShow[];
@@ -21,7 +23,7 @@ export const useTvShowsStore = defineStore("tvShows", () => {
         () => isLoadingIndex.value || isLoadingSearch.value,
     );
 
-    async function loadIndex(pages: number[] = [0, 1]) {
+    async function loadShows(pages: number[] = [0, 1]) {
         error.value = null;
         isLoadingIndex.value = true;
 
@@ -175,7 +177,7 @@ export const useTvShowsStore = defineStore("tvShows", () => {
         allGenres,
         sections,
 
-        loadIndex,
+        loadShows,
         runSearch,
     };
 });

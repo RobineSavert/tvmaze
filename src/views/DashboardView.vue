@@ -34,7 +34,7 @@ const { searchQuery, selectedGenre, allGenres, sections, isLoading, error } =
 const debouncedQuery = useDebounce(searchQuery, 400);
 
 onMounted(() => {
-  store.loadIndex([0, 1]);
+  store.loadShows([0, 1]);
 });
 
 watch(debouncedQuery, (q) => store.runSearch(q), { immediate: true });
