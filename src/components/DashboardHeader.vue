@@ -1,6 +1,6 @@
 <template>
   <header
-    class="sticky top-0 z-40 -mx-4 border-b border-white/10 bg-zinc-950/80 px-4 py-4 backdrop-blur md:-mx-6 md:px-6 lg:-mx-8 lg:px-8"
+    class="sticky top-0 z-40 -mx-4 border-b border-white/10 bg-zinc-950/80 p-4 backdrop-blur md:-mx-6 md:px-6 lg:-mx-8 lg:px-8"
   >
     <div
       class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"
@@ -35,7 +35,7 @@
             v-model="searchQuery"
             type="search"
             placeholder="Search shows by name…"
-            class="w-full rounded-2xl border border-white/10 bg-white/5 py-3 pl-10 pr-3 text-sm text-zinc-100 placeholder:text-zinc-500 outline-none transition focus:border-white/20 focus:bg-white/10"
+            class="w-full rounded-2xl border border-white/10 bg-white/5 pl-10 pr-3 text-sm text-zinc-100 placeholder:text-zinc-500 outline-none transition focus:border-white/20 focus:bg-white/10"
           />
         </div>
 
@@ -43,7 +43,7 @@
           <select
             aria-label="Genres"
             v-model="genre"
-            class="w-full appearance-none rounded-2xl border border-white/10 bg-white/5 px-4 py-3 pr-12 text-sm text-zinc-100 outline-none transition focus:border-white/20 focus:bg-white/10"
+            class="w-full appearance-none rounded-2xl border border-white/10 bg-white/5 px-4 pl-3 pr-12 text-sm text-zinc-100 outline-none transition focus:border-white/20 focus:bg-white/10"
           >
             <option class="bg-zinc-900" value="">All genres</option>
             <option v-for="g in genres" :key="g" class="bg-zinc-900" :value="g">

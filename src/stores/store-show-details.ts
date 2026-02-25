@@ -7,7 +7,6 @@ export const useShowDetailStore = defineStore("showDetail", () => {
     const show = ref<TvMazeShow | null>(null);
     const cast = ref<TvMazeCastMember[]>([]);
     const episodes = ref<TvMazeEpisode[]>([]);
-
     const isLoading = ref(false);
     const error = ref<string | null>(null);
 

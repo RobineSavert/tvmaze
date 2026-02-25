@@ -12,7 +12,7 @@
       v-if="episodes.length === 0"
       class="mt-3 rounded-2xl border border-white/10 bg-white/5 p-6 text-sm text-zinc-300"
     >
-      No episodes found.
+      No episodes found..
     </div>
 
     <div v-else class="mt-3 overflow-hidden rounded-2xl border border-white/10">
