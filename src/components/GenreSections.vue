@@ -51,7 +51,7 @@ const totalShows = computed(() =>
   // reduce loops over all sections and accumulates a number
   // if section.shows exists, I use its length
   // if it is undefined, I use 0
-  // my store already guarantees shows is always an array, so this is extra safety
+  // my store already guarantees shows is always an array, so this is just extra safety
   // so totalShows = total number of shows currently visible across all genres.
   // so if search filters the dataset, this number updates automatically
   sections.reduce((sum, section) => sum + (section.shows?.length ?? 0), 0),

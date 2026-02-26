@@ -28,13 +28,14 @@ export const useTvShowsStore = defineStore("tvShows", () => {
         isLoadingIndex.value = true;
 
         try {
+            // no loop, just starting all requests at once (faster)
             const pageResults = await Promise.all(
                 pages.map((pageNumber) => getShowsPage(pageNumber))
             );
 
-            const mergedShows = pageResults.flat();
+            const mergedShows = pageResults.flat(); // flat cleans up the result array
 
-            // Remove duplicates by show ID
+            // Remove duplicates by show ID because ui needs to be stable
             const showByIdMap = new Map<number, TvMazeShow>();
             for (const show of mergedShows) {
                 showByIdMap.set(show.id, show);
@@ -56,9 +57,9 @@ export const useTvShowsStore = defineStore("tvShows", () => {
     // Call this when searchQuery changes (debounced in component)
     async function runSearch(nextQuery?: string) {
         const trimmedQuery = (nextQuery ?? searchQuery.value).trim();
-        searchQuery.value = trimmedQuery;
+        searchQuery.value = trimmedQuery; // clean query
 
-        // When query is cleared → return to index mode
+        // When query is cleared or users types only spaces → return to index mode
         if (!trimmedQuery) {
             searchResults.value = [];
             error.value = null;
@@ -72,7 +73,7 @@ export const useTvShowsStore = defineStore("tvShows", () => {
         try {
             searchResults.value = await searchShows(trimmedQuery);
 
-            // If selected genre no longer exists in search results, reset it
+            // If selected genre no longer exists in search results, reset it. Can also be a seperate function, but this is easier to understand.
             if (
                 selectedGenre.value &&
                 !allGenres.value.includes(selectedGenre.value)
@@ -114,6 +115,7 @@ export const useTvShowsStore = defineStore("tvShows", () => {
     });
 
     const sections = computed<GenreSection[]>(() => {
+        // Group shows by genre
         const showsByGenreMap = new Map<string, TvMazeShow[]>();
 
         for (const show of activeShows.value) {
@@ -121,34 +123,22 @@ export const useTvShowsStore = defineStore("tvShows", () => {
                 if (!showsByGenreMap.has(genre)) {
                     showsByGenreMap.set(genre, []);
                 }
-
                 showsByGenreMap.get(genre)!.push(show);
             }
         }
 
-        // If a single genre is selected → filter to only that genre
-        if (selectedGenre.value) {
-            const selectedGenreShows =
-                showsByGenreMap.get(selectedGenre.value) ?? [];
+        // If a single genre is selected, I only keep that genre
+        const genresToInclude = selectedGenre.value
+            ? [selectedGenre.value]
+            : Array.from(showsByGenreMap.keys());
 
-            selectedGenreShows.sort(
-                (showA, showB) =>
-                    (showB.rating?.average ?? -1) -
-                    (showA.rating?.average ?? -1),
-            );
+        return genresToInclude
+            .map((genre) => {
+                const showsInGenre = showsByGenreMap.get(genre) ?? [];
 
-            return selectedGenreShows.length
-                ? [{ genre: selectedGenre.value, shows: selectedGenreShows }]
-                : [];
-        }
-
-        // Otherwise return all genres sorted alphabetically
-        return Array.from(showsByGenreMap.entries())
-            .map(([genre, showsInGenre]) => {
+                // Sort shows descending by rating
                 showsInGenre.sort(
-                    (showA, showB) =>
-                        (showB.rating?.average ?? -1) -
-                        (showA.rating?.average ?? -1),
+                    (a, b) => (b.rating?.average ?? -1) - (a.rating?.average ?? -1)
                 );
 
                 return {
@@ -156,9 +146,8 @@ export const useTvShowsStore = defineStore("tvShows", () => {
                     shows: showsInGenre,
                 };
             })
-            .sort((sectionA, sectionB) =>
-                sectionA.genre.localeCompare(sectionB.genre),
-            );
+            // Always sort sections alphabetically by genre
+            .sort((a, b) => a.genre.localeCompare(b.genre));
     });
 
     return {
